@@ -1,0 +1,41 @@
+{
+  "name": "bitws-js",
+  "version": "0.0.1",
+  "description": "Bitws javascript library",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "coverage": "istanbul cover _mocha -- -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AugustoL/bitws-js.git"
+  },
+  "keywords": [],
+  "author": "Augusto Lemble <npm@augustolemble.com> (http://augustolemble.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AugustoL/bitws-js/issues"
+  },
+  "homepage": "https://github.com/AugustoL/bitws-js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "object-assign": "~4.0.1",
+    "bitcore-lib": "~0.13.14",
+    "bitcore-message": "~1.0.2",
+    "base64-url": "~1.2.2",
+    "json-stable-stringify": "~1.0.1",
+    "sjcl": "~1.0.3",
+    "bitcore-mnemonic": "~1.0.1"
+  },
+  "devDependencies": {
+    "grunt": "~1.0.1",
+    "grunt-contrib-uglify": "~1.0.1",
+    "chai": "^3.4.0",
+    "istanbul": "^0.4.0",
+    "mocha": "^2.3.3",
+    "grunt-contrib-watch": "~1.0.0"
+  }
+}
