@@ -1,5 +1,5 @@
 TN:
-SF:/home/blackjak/Escritorio/bitjws-js/dist/bitws-js.js
+SF:/home/blackjak/bitjws-js/dist/bitws-js.js
 FN:37,deriveKeys
 FN:86,recoverKeys
 FN:124,keyToBuffer
@@ -126,7 +126,7 @@ BRF:18
 BRH:11
 end_of_record
 TN:
-SF:/home/blackjak/Escritorio/bitjws-js/dist/bitws-js.min.js
+SF:/home/blackjak/bitjws-js/dist/bitws-js.min.js
 FN:2,deriveKeys
 FN:2,recoverKeys
 FN:2,keyToBuffer

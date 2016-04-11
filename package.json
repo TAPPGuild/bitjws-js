@@ -4,7 +4,7 @@
   "description": "Bitws javascript library",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha && istanbul cover _mocha -- -R spec",
     "coverage": "istanbul cover _mocha -- -R spec"
   },
   "repository": {

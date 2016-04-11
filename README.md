@@ -26,3 +26,6 @@ Run: `grunt dev` and do your stuff.
 
 ## Build
 Run: `grunt build`
+
+## Test
+Run: `npm test` and the test will run over the dist files.
