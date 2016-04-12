@@ -1,6 +1,5 @@
 # bitws-js
 A javascript library for bitws
-[![Coverage Status](https://coveralls.io/repos/github/deginner/bitjws-js/badge.svg?branch=master)](https://coveralls.io/github/deginner/bitjws-js?branch=master)
 
 ## Install
 
