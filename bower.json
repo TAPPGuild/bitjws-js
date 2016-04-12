@@ -1,0 +1,24 @@
+{
+  "name": "bitws-js",
+  "description": "Bitws javascript library",
+  "main": "index.js",
+  "authors": [
+    "Augusto Lemble <npm@augustolemble.com> (http://augustolemble.com)"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "bitws",
+    "javascript",
+    "bitcoin",
+    "library"
+  ],
+  "homepage": "https://github.com/deginner/bitjws-js",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

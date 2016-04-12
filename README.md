@@ -2,6 +2,10 @@
 A javascript library for bitws
 [![Coverage Status](https://coveralls.io/repos/github/deginner/bitjws-js/badge.svg?branch=master)](https://coveralls.io/github/deginner/bitjws-js?branch=master)
 
+## Install
+
+Run: `bower install bitws-js`
+
 ## Methdos
 
 ### signSerialize(url, payload, sign)
@@ -21,6 +25,12 @@ Convert data stored as a sequence of 8 elements composed of 4 bytes each to a se
 
 ### checkBytes(data)
 Return the last 6 hexadecimal digits from SHA256(data).
+
+### wifToPriv(wif)
+Convert a wif string address to a private key string.
+
+### privToWif(priv)
+Convert a private key string to a wif string address.
 
 ## Develop
 Run: `grunt dev` and do your stuff.
