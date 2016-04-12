@@ -5,5 +5,7 @@ module.exports = {
     deriveKeys : deriveKeys,
     recoverKeys : recoverKeys,
     keyToBuffer : keyToBuffer,
-    checkBytes : checkBytes
+    checkBytes : checkBytes,
+    privToWif : privToWif,
+    wifToPriv : wifToPriv
 }

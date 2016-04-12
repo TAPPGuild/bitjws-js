@@ -150,6 +150,27 @@ function checkBytes(data) {
   var check = hex.slice(-6);
   return check;
 }
+
+/**
+ * Returns in wif format the privateKey provided.
+ *
+ * @param {string} priv
+ * @returns {string}
+ */
+function privToWif(priv) {
+    return bitcore.PrivateKey(priv).toWIF();
+}
+
+/**
+ * Returns a PrivateKey object from the wif format privateKey provided.
+ *
+ * @param {string} wif
+ * @returns {String}
+ */
+function wifToPriv(wif) {
+    var privateKey = new bitcore.PrivateKey(wif);
+    return privateKey.toString();
+}
 ;
 /**
  * Return a JWT header base64url encoded. The keyId is stored in the header
@@ -260,5 +281,7 @@ module.exports = {
     deriveKeys : deriveKeys,
     recoverKeys : recoverKeys,
     keyToBuffer : keyToBuffer,
-    checkBytes : checkBytes
+    checkBytes : checkBytes,
+    privToWif : privToWif,
+    wifToPriv : wifToPriv
 }
