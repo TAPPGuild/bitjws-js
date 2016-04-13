@@ -7,10 +7,10 @@ Run: `bower install bitws-js`
 
 ## Methdos
 
-### signSerialize(url, payload, sign)
+### signSerialize(url, payload, sign, expTime)
 Return a signed JWT message. By default the expiration claim (exp) is set to one hour in the future and the issued at claim (iat) is the current unix timestamp * 1000.
 
-### validateDeserialize(url, raw)
+### validateDeserialize(url, raw, checkExpiration)
 Verify a signed JWT message and return its header and payload if the signature matches.
 
 ### deriveKeys(username, password, iters, salt)

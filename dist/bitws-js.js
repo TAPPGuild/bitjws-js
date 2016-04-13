@@ -35,39 +35,39 @@ var ITERCOUNT = 10000;
  * @returns {object}
  */
 function deriveKeys(username, password, iters, salt) {
-  var saltHex, rawSalt, iterCount;
-  var data = username + password;
-  var check = checkBytes(data);
+    var saltHex, rawSalt, iterCount;
+    var data = username + password;
+    var check = checkBytes(data);
 
-  if (salt) {
-    rawSalt = sjcl.codec.hex.toBits(salt);
-    saltHex = salt;
-  } else {
-    rawSalt = sjcl.random.randomWords(16 / WORDSIZE);
-    saltHex = sjcl.codec.hex.fromBits(rawSalt);
-  }
+    if (salt) {
+        rawSalt = sjcl.codec.hex.toBits(salt);
+        saltHex = salt;
+    } else {
+        rawSalt = sjcl.random.randomWords(16 / WORDSIZE);
+        saltHex = sjcl.codec.hex.fromBits(rawSalt);
+    }
 
-  /* Use PBKDF2-HMAC-SHA256 to generate a base key for usage with BIP39. */
-  if (!iters) {
-    iterCount = ITERCOUNT + Math.abs(sjcl.random.randomWords(1)[0] % 1024);
-  } else {
-    iterCount = Math.max(iters, 5000);
-  }
-  var baseKey = sjcl.misc.pbkdf2(data, rawSalt, iterCount);
-  var words = Mnemonic.fromSeed(keyToBuffer(baseKey), Mnemonic.Words.ENGLISH);
+    /* Use PBKDF2-HMAC-SHA256 to generate a base key for usage with BIP39. */
+    if (!iters) {
+        iterCount = ITERCOUNT + Math.abs(sjcl.random.randomWords(1)[0] % 1024);
+    } else {
+        iterCount = Math.max(iters, 5000);
+    }
+    var baseKey = sjcl.misc.pbkdf2(data, rawSalt, iterCount);
+    var words = Mnemonic.fromSeed(keyToBuffer(baseKey), Mnemonic.Words.ENGLISH);
 
-  var keys = recoverKeys(words);
+    var keys = recoverKeys(words);
 
-  return {
-    payload: {
-      username: username,
-      check: check,
-      salt: saltHex,
-      iterations: iterCount
-    },
-    key: keys,
-    mnemonic: words.toString()
-  };
+    return {
+        payload: {
+            username: username,
+            check: check,
+            salt: saltHex,
+            iterations: iterCount
+        },
+        key: keys,
+        mnemonic: words.toString()
+    };
 }
 
 
@@ -84,25 +84,25 @@ function deriveKeys(username, password, iters, salt) {
  * @returns {object}
  */
 function recoverKeys(mnemonic) {
-  var words = (mnemonic instanceof Mnemonic) ? mnemonic : Mnemonic(mnemonic);
-  var hdkey = words.toHDPrivateKey();
-  var rawEncKey = hdkey.derive(0, true);
-  var rawSignKey = hdkey.derive(1, true);
-  var rawGenKey = hdkey.derive(2, true);
+    var words = (mnemonic instanceof Mnemonic) ? mnemonic : Mnemonic(mnemonic);
+    var hdkey = words.toHDPrivateKey();
+    var rawEncKey = hdkey.derive(0, true);
+    var rawSignKey = hdkey.derive(1, true);
+    var rawGenKey = hdkey.derive(2, true);
 
-  var encKey = sjcl.codec.hex.toBits(rawEncKey.privateKey.bn.toJSON());
-  var signKey = rawSignKey.privateKey;
-  var signAddress = rawSignKey.publicKey.toAddress().toString();
+    var encKey = sjcl.codec.hex.toBits(rawEncKey.privateKey.bn.toJSON());
+    var signKey = rawSignKey.privateKey;
+    var signAddress = rawSignKey.publicKey.toAddress().toString();
 
-  return {
-    sign: {
-      key: signKey,
-      address: signAddress,
-      raw: rawSignKey
-    },
-    encrypt: encKey,
-    genWallet: rawGenKey
-  };
+    return {
+        sign: {
+            key: signKey,
+            address: signAddress,
+            raw: rawSignKey
+        },
+        encrypt: encKey,
+        genWallet: rawGenKey
+    };
 }
 
 
@@ -122,19 +122,19 @@ function recoverKeys(mnemonic) {
  * @returns {object}
  */
 function keyToBuffer(key) {
-  var abuffer = new ArrayBuffer(32);  /* 256 bits. */
-  var iview = new Int32Array(abuffer);
-  var bview = new Uint8Array(abuffer);
+    var abuffer = new ArrayBuffer(32);  /* 256 bits. */
+    var iview = new Int32Array(abuffer);
+    var bview = new Uint8Array(abuffer);
 
-  if (iview.length != key.length) {
-    throw new Error("Unexpected length");
-  }
+    if (iview.length != key.length) {
+        throw new Error("Unexpected length");
+    }
 
-  for (var i = 0; i < iview.length; i++) {
-    iview[i] = key[i];
-  }
+    for (var i = 0; i < iview.length; i++) {
+        iview[i] = key[i];
+    }
 
-  return new Buffer(bview);
+    return new Buffer(bview);
 }
 
 
@@ -145,10 +145,10 @@ function keyToBuffer(key) {
  * @returns {string}
  */
 function checkBytes(data) {
-  var hash = sjcl.hash.sha256.hash(data);
-  var hex = sjcl.codec.hex.fromBits(hash);
-  var check = hex.slice(-6);
-  return check;
+    var hash = sjcl.hash.sha256.hash(data);
+    var hex = sjcl.codec.hex.fromBits(hash);
+    var check = hex.slice(-6);
+    return check;
 }
 
 /**
@@ -181,13 +181,13 @@ function wifToPriv(wif) {
  * @private
  */
 function jwtHeader(keyId) {
-  var data = {
-    typ: 'JWT',
-    alg: 'CUSTOM-BITCOIN-SIGN',
-    kid: keyId
-  };
+    var data = {
+        typ: 'JWT',
+        alg: 'CUSTOM-BITCOIN-SIGN',
+        kid: keyId
+    };
 
-  return base64url.encode(stringify(data));
+    return base64url.encode(stringify(data));
 }
 
 
@@ -212,27 +212,30 @@ function jwtHeader(keyId) {
  * @param {object} sign - An object that contains at least "address" and "key".
  * @returns {string}
  */
-function signSerialize(url, payload, sign) {
-  var msg;
-  var rawPayload;
-  var signature;
-  var claims = {};
+function signSerialize(url, payload, sign, expTime) {
+    var msg;
+    var rawPayload;
+    var signature;
+    var claims = {};
 
-  /* JWT claims. */
-  /* Expiration time (exp) is used to disallow considering the payload
-   * if it's received too late. Default to now + 1 hour. */
-  claims.exp = (new Date().getTime() / 1000) + 3600;
-  /* Issued at (iat) is used as an increasing nonce. */
-  claims.iat = new Date().getTime();
-  /* Audience (aud) is specified so the signature takes into account
-   * the expected receiver. */
-  claims.aud = url;
+    /* JWT claims. */
+    /* Expiration time (exp) is used to disallow considering the payload
+    * if it's received too late. Default to now + 1 hour. */
+    if (expTime && expTime > 0)
+        claims.exp = (new Date().getTime() / 1000) + expTime;
+    else
+        claims.exp = (new Date().getTime() / 1000) + 3600;
+    /* Issued at (iat) is used as an increasing nonce. */
+    claims.iat = new Date().getTime();
+    /* Audience (aud) is specified so the signature takes into account
+    * the expected receiver. */
+    claims.aud = url;
 
-  rawPayload = base64url.encode(stringify(assign(claims, payload)));
-  msg = jwtHeader(sign.address) + '.' + rawPayload;
-  signature = base64url.encode(new Message(msg).sign(sign.key));
+    rawPayload = base64url.encode(stringify(assign(claims, payload)));
+    msg = jwtHeader(sign.address) + '.' + rawPayload;
+    signature = base64url.encode(new Message(msg).sign(sign.key));
 
-  return msg + '.' + signature;
+    return msg + '.' + signature;
 }
 
 
@@ -244,35 +247,35 @@ function signSerialize(url, payload, sign) {
  * @param {string} raw - signed JWT message received.
  * @returns {object}
  */
-function validateDeserialize(url, raw) {
-  var rawHeader, rawPayload, signature;
-  var key, header, payload;
-  var pieces = raw.split('.');
+function validateDeserialize(url, raw, checkExpiration) {
+    var rawHeader, rawPayload, signature;
+    var key, header, payload;
+    var pieces = raw.split('.');
 
-  if (pieces.length != 3) {
-    throw new TypeError("Invalid raw data");
-  }
-  rawHeader = pieces[0];
-  rawPayload = pieces[1];
-  signature = base64url.decode(pieces[2]);
+    if (pieces.length != 3) {
+        throw new TypeError("Invalid raw data");
+    }
+    rawHeader = pieces[0];
+    rawPayload = pieces[1];
+    signature = base64url.decode(pieces[2]);
 
-  header = JSON.parse(base64url.decode(rawHeader));
-  key = header.kid;
-  if (!key) {
-    throw new TypeError("Invalid header, missing key id");
-  }
-  if (!(new Message(rawHeader + '.' + rawPayload).verify(key, signature))) {
-    throw new Error("Signature does not match");
-  }
+    header = JSON.parse(base64url.decode(rawHeader));
+    key = header.kid;
+    if (!key) {
+        throw new TypeError("Invalid header, missing key id");
+    }
+    if (!(new Message(rawHeader + '.' + rawPayload).verify(key, signature))) {
+        throw new Error("Signature does not match");
+    }
 
-  payload = JSON.parse(base64url.decode(rawPayload));
-  if (payload.aud !== url) {
-    throw new Error("Audience mismatch (" + payload.aud + " != " + url + ")");
-  } else if (new Date().getTime() / 1000 > payload.exp) {
-    throw new Error("Payload expired");
-  }
+    payload = JSON.parse(base64url.decode(rawPayload));
+    if (payload.aud !== url) {
+        throw new Error("Audience mismatch (" + payload.aud + " != " + url + ")");
+    } else if (checkExpiration && ((new Date().getTime() / 1000) > payload.exp)) {
+        throw new Error("Payload expired");
+    }
 
-  return {header: header, payload: payload};
+    return {header: header, payload: payload};
 }
 ;
 module.exports = {

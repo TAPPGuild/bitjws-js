@@ -14,39 +14,39 @@ var ITERCOUNT = 10000;
  * @returns {object}
  */
 function deriveKeys(username, password, iters, salt) {
-  var saltHex, rawSalt, iterCount;
-  var data = username + password;
-  var check = checkBytes(data);
+    var saltHex, rawSalt, iterCount;
+    var data = username + password;
+    var check = checkBytes(data);
 
-  if (salt) {
-    rawSalt = sjcl.codec.hex.toBits(salt);
-    saltHex = salt;
-  } else {
-    rawSalt = sjcl.random.randomWords(16 / WORDSIZE);
-    saltHex = sjcl.codec.hex.fromBits(rawSalt);
-  }
+    if (salt) {
+        rawSalt = sjcl.codec.hex.toBits(salt);
+        saltHex = salt;
+    } else {
+        rawSalt = sjcl.random.randomWords(16 / WORDSIZE);
+        saltHex = sjcl.codec.hex.fromBits(rawSalt);
+    }
 
-  /* Use PBKDF2-HMAC-SHA256 to generate a base key for usage with BIP39. */
-  if (!iters) {
-    iterCount = ITERCOUNT + Math.abs(sjcl.random.randomWords(1)[0] % 1024);
-  } else {
-    iterCount = Math.max(iters, 5000);
-  }
-  var baseKey = sjcl.misc.pbkdf2(data, rawSalt, iterCount);
-  var words = Mnemonic.fromSeed(keyToBuffer(baseKey), Mnemonic.Words.ENGLISH);
+    /* Use PBKDF2-HMAC-SHA256 to generate a base key for usage with BIP39. */
+    if (!iters) {
+        iterCount = ITERCOUNT + Math.abs(sjcl.random.randomWords(1)[0] % 1024);
+    } else {
+        iterCount = Math.max(iters, 5000);
+    }
+    var baseKey = sjcl.misc.pbkdf2(data, rawSalt, iterCount);
+    var words = Mnemonic.fromSeed(keyToBuffer(baseKey), Mnemonic.Words.ENGLISH);
 
-  var keys = recoverKeys(words);
+    var keys = recoverKeys(words);
 
-  return {
-    payload: {
-      username: username,
-      check: check,
-      salt: saltHex,
-      iterations: iterCount
-    },
-    key: keys,
-    mnemonic: words.toString()
-  };
+    return {
+        payload: {
+            username: username,
+            check: check,
+            salt: saltHex,
+            iterations: iterCount
+        },
+        key: keys,
+        mnemonic: words.toString()
+    };
 }
 
 
@@ -63,25 +63,25 @@ function deriveKeys(username, password, iters, salt) {
  * @returns {object}
  */
 function recoverKeys(mnemonic) {
-  var words = (mnemonic instanceof Mnemonic) ? mnemonic : Mnemonic(mnemonic);
-  var hdkey = words.toHDPrivateKey();
-  var rawEncKey = hdkey.derive(0, true);
-  var rawSignKey = hdkey.derive(1, true);
-  var rawGenKey = hdkey.derive(2, true);
+    var words = (mnemonic instanceof Mnemonic) ? mnemonic : Mnemonic(mnemonic);
+    var hdkey = words.toHDPrivateKey();
+    var rawEncKey = hdkey.derive(0, true);
+    var rawSignKey = hdkey.derive(1, true);
+    var rawGenKey = hdkey.derive(2, true);
 
-  var encKey = sjcl.codec.hex.toBits(rawEncKey.privateKey.bn.toJSON());
-  var signKey = rawSignKey.privateKey;
-  var signAddress = rawSignKey.publicKey.toAddress().toString();
+    var encKey = sjcl.codec.hex.toBits(rawEncKey.privateKey.bn.toJSON());
+    var signKey = rawSignKey.privateKey;
+    var signAddress = rawSignKey.publicKey.toAddress().toString();
 
-  return {
-    sign: {
-      key: signKey,
-      address: signAddress,
-      raw: rawSignKey
-    },
-    encrypt: encKey,
-    genWallet: rawGenKey
-  };
+    return {
+        sign: {
+            key: signKey,
+            address: signAddress,
+            raw: rawSignKey
+        },
+        encrypt: encKey,
+        genWallet: rawGenKey
+    };
 }
 
 
@@ -101,19 +101,19 @@ function recoverKeys(mnemonic) {
  * @returns {object}
  */
 function keyToBuffer(key) {
-  var abuffer = new ArrayBuffer(32);  /* 256 bits. */
-  var iview = new Int32Array(abuffer);
-  var bview = new Uint8Array(abuffer);
+    var abuffer = new ArrayBuffer(32);  /* 256 bits. */
+    var iview = new Int32Array(abuffer);
+    var bview = new Uint8Array(abuffer);
 
-  if (iview.length != key.length) {
-    throw new Error("Unexpected length");
-  }
+    if (iview.length != key.length) {
+        throw new Error("Unexpected length");
+    }
 
-  for (var i = 0; i < iview.length; i++) {
-    iview[i] = key[i];
-  }
+    for (var i = 0; i < iview.length; i++) {
+        iview[i] = key[i];
+    }
 
-  return new Buffer(bview);
+    return new Buffer(bview);
 }
 
 
@@ -124,10 +124,10 @@ function keyToBuffer(key) {
  * @returns {string}
  */
 function checkBytes(data) {
-  var hash = sjcl.hash.sha256.hash(data);
-  var hex = sjcl.codec.hex.fromBits(hash);
-  var check = hex.slice(-6);
-  return check;
+    var hash = sjcl.hash.sha256.hash(data);
+    var hex = sjcl.codec.hex.fromBits(hash);
+    var check = hex.slice(-6);
+    return check;
 }
 
 /**

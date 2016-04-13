@@ -13,13 +13,20 @@ describe('Complete Test', function() {
         var payload = {data: data.payload};
         var raw = bitws.signSerialize(null, payload, data.key.sign);
 
-        var decoded = bitws.validateDeserialize(null, raw);
+        var decoded = bitws.validateDeserialize(null, raw, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
-
         expect(decoded.header).to.have.property("kid");
         expect(decoded.header.kid).to.be.equal(data.key.sign.address);
+        expect(decoded.payload).to.have.property("aud");
+        expect(decoded.payload.aud).to.be.null;
 
+        raw = bitws.signSerialize(null, payload, data.key.sign, 1800);
+        decoded = bitws.validateDeserialize(null, raw, false);
+        expect(decoded).to.have.property("header");
+        expect(decoded).to.have.property("payload");
+        expect(decoded.header).to.have.property("kid");
+        expect(decoded.header.kid).to.be.equal(data.key.sign.address);
         expect(decoded.payload).to.have.property("aud");
         expect(decoded.payload.aud).to.be.null;
     });
@@ -55,13 +62,20 @@ describe('Complete Test on .min file', function() {
         var payload = {data: data.payload};
         var raw = bitwsMin.signSerialize(null, payload, data.key.sign);
 
-        var decoded = bitwsMin.validateDeserialize(null, raw);
+        var decoded = bitwsMin.validateDeserialize(null, raw, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
-
         expect(decoded.header).to.have.property("kid");
         expect(decoded.header.kid).to.be.equal(data.key.sign.address);
+        expect(decoded.payload).to.have.property("aud");
+        expect(decoded.payload.aud).to.be.null;
 
+        raw = bitwsMin.signSerialize(null, payload, data.key.sign, 1800);
+        decoded = bitwsMin.validateDeserialize(null, raw, false);
+        expect(decoded).to.have.property("header");
+        expect(decoded).to.have.property("payload");
+        expect(decoded.header).to.have.property("kid");
+        expect(decoded.header.kid).to.be.equal(data.key.sign.address);
         expect(decoded.payload).to.have.property("aud");
         expect(decoded.payload.aud).to.be.null;
     });
