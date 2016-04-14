@@ -165,11 +165,15 @@ function privToWif(priv) {
  * Returns a PrivateKey object from the wif format privateKey provided.
  *
  * @param {string} wif
- * @returns {String}
+ * @returns {Object}
  */
 function wifToPriv(wif) {
     var privateKey = new bitcore.PrivateKey(wif);
-    return privateKey.toString();
+    return {
+        key : privateKey.toString(),
+        address : privateKey.publicKey.toAddress().toString(),
+        raw : privateKey
+    };
 }
 ;
 /**
@@ -204,7 +208,7 @@ function jwtHeader(keyId) {
  *
  * var payload = {data: data.payload};
  * var audience = 'https://example.com';
- * var raw = bitws.auth.signSerialize(audience, payload, data.key.sign);
+ * var raw = bitws.auth.signSerialize(audience, payload, data.key.sign, 3600);
  * ```
  *
  * @param {string} url - Used as the audience (aud) in the JWT claims.
@@ -233,9 +237,8 @@ function signSerialize(url, payload, sign, expTime) {
 
     rawPayload = base64url.encode(stringify(assign(claims, payload)));
     msg = jwtHeader(sign.address) + '.' + rawPayload;
-    signature = base64url.encode(new Message(msg).sign(sign.key));
 
-    return msg + '.' + signature;
+    return msg + '.' + base64url.encode(new Message(msg).sign(bitcore.PrivateKey(sign.key)));;
 }
 
 
@@ -286,5 +289,6 @@ module.exports = {
     keyToBuffer : keyToBuffer,
     checkBytes : checkBytes,
     privToWif : privToWif,
-    wifToPriv : wifToPriv
+    wifToPriv : wifToPriv,
+    bitcore : bitcore
 }

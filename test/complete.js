@@ -22,6 +22,7 @@ describe('Complete Test', function() {
         expect(decoded.payload.aud).to.be.null;
 
         raw = bitws.signSerialize(null, payload, data.key.sign, 1800);
+        console.log(raw);
         decoded = bitws.validateDeserialize(null, raw, false);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
@@ -29,6 +30,7 @@ describe('Complete Test', function() {
         expect(decoded.header.kid).to.be.equal(data.key.sign.address);
         expect(decoded.payload).to.have.property("aud");
         expect(decoded.payload.aud).to.be.null;
+
     });
 
     it("should provide the same keys", function() {
@@ -47,7 +49,27 @@ describe('Complete Test', function() {
 
     it("should return a string private key address", function() {
         var priv1 = bitws.wifToPriv("L3Ygumw9tv8Y7nP8y3cM164pMYugne5B9SPdf6jix1Rve4e91yTd");
-        expect(priv1).to.be.equal("bcc993177bec48f94cb0e617980a320f028f8cfa0f7a914d44ec84e017dc7cc6");
+        expect(priv1.key).to.be.equal("bcc993177bec48f94cb0e617980a320f028f8cfa0f7a914d44ec84e017dc7cc6");
+    });
+
+    it("should signSerialize using a privKey form a wif", function() {
+        var data = bitws.deriveKeys('some user', 'some pwd');
+        expect(data).to.have.property('key');
+        expect(data).to.have.property('payload');
+
+        var payload = {data: data.payload};
+
+        var wif = "KxZUqanyzZEGptbauar66cQo8bfGHwDauHogkxCaqTeMGY1stH6E"
+        var priv = bitws.wifToPriv(wif);
+        
+        var raw = bitws.signSerialize(null, payload, priv.raw);
+        decoded = bitws.validateDeserialize(null, raw, false);
+        expect(decoded).to.have.property("header");
+        expect(decoded).to.have.property("payload");
+        expect(decoded.header).to.have.property("kid");
+        expect(decoded.header.kid).to.be.equal(data.key.sign.address);
+        expect(decoded.payload).to.have.property("aud");
+        expect(decoded.payload.aud).to.be.null;
     });
 
 });
@@ -96,7 +118,7 @@ describe('Complete Test on .min file', function() {
 
     it("should return a string private key address", function() {
         var priv1 = bitwsMin.wifToPriv("L3Ygumw9tv8Y7nP8y3cM164pMYugne5B9SPdf6jix1Rve4e91yTd");
-        expect(priv1).to.be.equal("bcc993177bec48f94cb0e617980a320f028f8cfa0f7a914d44ec84e017dc7cc6");
+        expect(priv1.key).to.be.equal("bcc993177bec48f94cb0e617980a320f028f8cfa0f7a914d44ec84e017dc7cc6");
     });
 
 });

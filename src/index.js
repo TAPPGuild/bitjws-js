@@ -7,5 +7,6 @@ module.exports = {
     keyToBuffer : keyToBuffer,
     checkBytes : checkBytes,
     privToWif : privToWif,
-    wifToPriv : wifToPriv
+    wifToPriv : wifToPriv,
+    bitcore : bitcore
 }
