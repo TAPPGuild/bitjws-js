@@ -72,10 +72,12 @@ function recoverKeys(mnemonic) {
     var encKey = sjcl.codec.hex.toBits(rawEncKey.privateKey.bn.toJSON());
     var signKey = rawSignKey.privateKey;
     var signAddress = rawSignKey.publicKey.toAddress().toString();
+    var wifKey = rawSignKey.privateKey.toWIF();
 
     return {
         sign: {
             key: signKey,
+            wif : wifKey,
             address: signAddress,
             raw: rawSignKey
         },
@@ -147,10 +149,10 @@ function privToWif(priv) {
  * @returns {Object}
  */
 function wifToPriv(wif) {
-    var privateKey = new bitcore.PrivateKey(wif);
+    var pvKey = new bitcore.PrivateKey(wif);
     return {
-        key : privateKey.toString(),
-        address : privateKey.publicKey.toAddress().toString(),
-        raw : privateKey
-    };
+        key: pvKey.privateKey,
+        address: pvKey.publicKey.toAddress().toString(),
+        raw: pvKey
+    }
 }

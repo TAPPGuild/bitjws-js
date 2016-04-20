@@ -84,7 +84,7 @@ function validateDeserialize(url, raw, checkExpiration) {
     rawHeader = pieces[0];
     rawPayload = pieces[1];
     signature = base64url.decode(pieces[2]);
-
+    console.log(pieces);
     header = JSON.parse(base64url.decode(rawHeader));
     key = header.kid;
     if (!key) {
