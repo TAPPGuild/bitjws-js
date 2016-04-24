@@ -146,13 +146,12 @@ function privToWif(priv) {
  * Returns a PrivateKey object from the wif format privateKey provided.
  *
  * @param {string} wif
- * @returns {String}
+ * @returns {Object}
  */
 function wifToPriv(wif) {
-    var privateKey = new bitcore.PrivateKey(wif);
+    var pvKey = new bitcore.PrivateKey(wif);
     return {
-        key: privateKey.toString(),
-        address: privateKey.publicKey.toAddress().toString(),
-        raw: privateKey
+        key: pvKey,
+        address: pvKey.publicKey.toAddress().toString(),
     }
 }
