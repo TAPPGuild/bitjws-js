@@ -151,8 +151,7 @@ function privToWif(priv) {
 function wifToPriv(wif) {
     var pvKey = new bitcore.PrivateKey(wif);
     return {
-        key: pvKey.privateKey,
+        key: pvKey,
         address: pvKey.publicKey.toAddress().toString(),
-        raw: pvKey
     }
 }

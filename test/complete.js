@@ -5,107 +5,153 @@ var bitcore = require('bitcore-lib');
 
 describe('Complete Test', function() {
 
-    it("should create a JWS message and validate it", function() {
-        var data = bitws.deriveKeys('some user', 'some pwd');
-        expect(data).to.have.property('key');
-        expect(data).to.have.property('payload');
+    var genKey = null;
+    var derivedKey = null;
 
-        var payload = {data: data.payload};
-        var raw = bitws.signSerialize(null, payload, data.key.sign);
+    it("Should generate a pvkey and add his wif key", function(done) {
+        var pvKey = new bitcore.PrivateKey();
+        var wifTest = bitws.privToWif(pvKey);
+        var wifFromPriv = bitws.wifToPriv(wifTest);
+        genKey = {
+            address : wifFromPriv.address,
+            key : wifFromPriv.key,
+            wif : wifTest
+        };
+        expect(genKey).to.have.property("address");
+        expect(genKey).to.have.property("key");
+        expect(genKey).to.have.property("wif");
+        done();
+    });
 
-        var decoded = bitws.validateDeserialize(null, raw, true);
+    it("Should derive a new signature using a username and password", function(done) {
+        derivedKey = bitws.deriveKeys('username1', '123456');
+        expect(derivedKey).to.have.property('payload');
+        expect(derivedKey).to.have.property('key');
+        done();
+    });
+
+    it("Should create a signature using the generated pvkey (without url and expiration) and validate it", function(done) {
+
+        var payload = { something : "some data here" }
+
+        var signature = bitws.signSerialize(null, payload, genKey, null);
+        expect(signature.split('.').length).to.be.equal(3);
+
+        var decoded = bitws.validateDeserialize(null, signature, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
-        expect(decoded.header.kid).to.be.equal(data.key.sign.address);
+        expect(decoded.header.kid).to.be.equal(genKey.address);
         expect(decoded.payload).to.have.property("aud");
         expect(decoded.payload.aud).to.be.null;
+        expect(decoded.payload).to.have.property("data");
+        expect(decoded.payload.data).to.have.property("something");
+        expect(decoded.payload.data.something).to.be.equal("some data here");
+        done();
 
-        raw = bitws.signSerialize(null, payload, data.key.sign, 1800);
-        decoded = bitws.validateDeserialize(null, raw, false);
+    });
+
+    it("Should create a signature using the generated pvkey (with url and expiration) and validate it", function(done) {
+
+        var payload = { something : "some data here" }
+
+        var signature = bitws.signSerialize("bitwsjsisawesome.com", payload, genKey, 1800);
+        expect(signature.split('.').length).to.be.equal(3);
+
+        var decoded = bitws.validateDeserialize("bitwsjsisawesome.com", signature, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
-        expect(decoded.header.kid).to.be.equal(data.key.sign.address);
+        expect(decoded.header.kid).to.be.equal(genKey.address);
         expect(decoded.payload).to.have.property("aud");
-        expect(decoded.payload.aud).to.be.null;
+        expect(decoded.payload.aud).to.be.equal("bitwsjsisawesome.com");
+        expect(decoded.payload).to.have.property("data");
+        expect(decoded.payload.data).to.have.property("something");
+        expect(decoded.payload.data.something).to.be.equal("some data here");
+        done();
 
     });
 
-    it("should provide the same keys", function() {
-        var data = bitws.deriveKeys('some user', 'some pwd');
-        var data2 = bitws.deriveKeys('some user', 'some pwd', data.payload.iterations, data.payload.salt);
+    it("Should create a signature using the generated pvkey (with url and expiration) and fail in validation because the timeout", function(done) {
 
-        expect(data2.payload.salt).to.be.equal(data.payload.salt);
-        expect(data2.key.address).to.be.equal(data.key.address);
-        expect(data2.key.encKey).to.be.equal(data.key.encKey);
+        this.timeout(15000);
+
+        var payload = { something : "some data here" }
+
+        var signature = bitws.signSerialize('bitwsjsisawesome.com', payload, genKey, 10);
+        expect(signature.split('.').length).to.be.equal(3);
+
+        setTimeout(function(){
+            try {
+                bitws.validateDeserialize('bitwsjsisawesome.com', signature, true);
+            } catch(e){
+                expect(e.toString()).to.be.equal("Error: Payload expired");
+                done();
+            }
+        },11000);
+
     });
 
-    it("should return a string wif address", function() {
-        var wif = bitws.privToWif("bcc993177bec48f94cb0e617980a320f028f8cfa0f7a914d44ec84e017dc7cc6");
-        expect(wif).to.be.equal("L3Ygumw9tv8Y7nP8y3cM164pMYugne5B9SPdf6jix1Rve4e91yTd");
-    });
+    it("Should create a signature using the derived pvkey (without url and expiration) and validate it", function(done) {
 
-    it("should signSerialize using a privKey form a wif", function() {
+        var payload = { something : "some data here" }
 
-        var payload = { data: { something : "some data goes here"} };
+        var signature = bitws.signSerialize(null, payload, derivedKey.key.sign, null);
+        expect(signature.split('.').length).to.be.equal(3);
 
-        var wif = "KxZUqanyzZEGptbauar66cQo8bfGHwDauHogkxCaqTeMGY1stH6E"
-        var priv = bitws.wifToPriv(wif);
-
-        var raw = bitws.signSerialize(null, payload, priv);
-        console.log(raw);
-        decoded = bitws.validateDeserialize(null, raw, false);
+        var decoded = bitws.validateDeserialize(null, signature, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
-        expect(decoded.header.kid).to.be.equal(priv.address);
+        expect(decoded.header.kid).to.be.equal(derivedKey.key.sign.address);
         expect(decoded.payload).to.have.property("aud");
         expect(decoded.payload.aud).to.be.null;
+        expect(decoded.payload).to.have.property("data");
+        expect(decoded.payload.data).to.have.property("something");
+        expect(decoded.payload.data.something).to.be.equal("some data here");
+        done();
+
     });
 
-});
+    it("Should create a signature using the derived pvkey (with url and expiration) and validate it", function(done) {
 
-describe('Complete Test on .min file', function() {
+        var payload = { something : "some data here" }
 
-    it("should create a JWS message and validate it", function() {
-        var data = bitwsMin.deriveKeys('some user', 'some pwd');
-        expect(data).to.have.property('key');
-        expect(data).to.have.property('payload');
+        var signature = bitws.signSerialize("bitwsjsisawesome.com", payload, derivedKey.key.sign, 1800);
+        expect(signature.split('.').length).to.be.equal(3);
 
-        var payload = {data: data.payload};
-        var raw = bitwsMin.signSerialize(null, payload, data.key.sign);
-
-        var decoded = bitwsMin.validateDeserialize(null, raw, true);
+        var decoded = bitws.validateDeserialize("bitwsjsisawesome.com", signature, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
-        expect(decoded.header.kid).to.be.equal(data.key.sign.address);
+        expect(decoded.header.kid).to.be.equal(derivedKey.key.sign.address);
         expect(decoded.payload).to.have.property("aud");
-        expect(decoded.payload.aud).to.be.null;
+        expect(decoded.payload.aud).to.be.equal("bitwsjsisawesome.com");
+        expect(decoded.payload).to.have.property("data");
+        expect(decoded.payload.data).to.have.property("something");
+        expect(decoded.payload.data.something).to.be.equal("some data here");
+        done();
 
-        raw = bitwsMin.signSerialize(null, payload, data.key.sign, 1800);
-        decoded = bitwsMin.validateDeserialize(null, raw, false);
-        expect(decoded).to.have.property("header");
-        expect(decoded).to.have.property("payload");
-        expect(decoded.header).to.have.property("kid");
-        expect(decoded.header.kid).to.be.equal(data.key.sign.address);
-        expect(decoded.payload).to.have.property("aud");
-        expect(decoded.payload.aud).to.be.null;
     });
 
-    it("should provide the same keys", function() {
-        var data = bitwsMin.deriveKeys('some user', 'some pwd');
-        var data2 = bitwsMin.deriveKeys('some user', 'some pwd', data.payload.iterations, data.payload.salt);
+    it("Should create a signature using the derived pvkey (with url and expiration) and fail in validation because the timeout", function(done) {
 
-        expect(data2.payload.salt).to.be.equal(data.payload.salt);
-        expect(data2.key.address).to.be.equal(data.key.address);
-        expect(data2.key.encKey).to.be.equal(data.key.encKey);
-    });
+        this.timeout(15000);
 
-    it("should return a string wif address", function() {
-        var wif = bitwsMin.privToWif("bcc993177bec48f94cb0e617980a320f028f8cfa0f7a914d44ec84e017dc7cc6");
-        expect(wif).to.be.equal("L3Ygumw9tv8Y7nP8y3cM164pMYugne5B9SPdf6jix1Rve4e91yTd");
+        var payload = { something : "some data here" }
+
+        var signature = bitws.signSerialize('bitwsjsisawesome.com', payload, derivedKey.key.sign, 10);
+        expect(signature.split('.').length).to.be.equal(3);
+
+        setTimeout(function(){
+            try {
+                bitws.validateDeserialize('bitwsjsisawesome.com', signature, true);
+            } catch(e){
+                expect(e.toString()).to.be.equal("Error: Payload expired");
+                done();
+            }
+        },11000);
+
     });
 
 });
