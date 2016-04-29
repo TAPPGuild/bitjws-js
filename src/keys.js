@@ -49,7 +49,6 @@ function deriveKeys(username, password, iters, salt) {
     };
 }
 
-
 /**
  * Produce keys for encrypting, signing requests, and generating wallets
  * from the given words using BIP39.
@@ -86,6 +85,19 @@ function recoverKeys(mnemonic) {
     };
 }
 
+/**
+ * Produce keys for encrypting, signing requests, and generating wallets.
+ *
+ * @returns {object}
+ */
+function newKeys(){
+    var pvKey = new bitcore.PrivateKey();
+    return {
+        address : pvKey.publicKey.toAddress().toString(),
+        key : pvKey,
+        wif : privToWif(pvKey)
+    };
+};
 
 /**
  * Convert data stored as a sequence of 8 elements composed of

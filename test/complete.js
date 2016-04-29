@@ -9,14 +9,7 @@ describe('Complete Test', function() {
     var derivedKey = null;
 
     it("Should generate a pvkey and add his wif key", function(done) {
-        var pvKey = new bitcore.PrivateKey();
-        var wifTest = bitws.privToWif(pvKey);
-        var wifFromPriv = bitws.wifToPriv(wifTest);
-        genKey = {
-            address : wifFromPriv.address,
-            key : wifFromPriv.key,
-            wif : wifTest
-        };
+        genKey = bitws.newKeys();
         expect(genKey).to.have.property("address");
         expect(genKey).to.have.property("key");
         expect(genKey).to.have.property("wif");

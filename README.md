@@ -19,6 +19,9 @@ Generate a salt and derive keys based on the username and password given. PBKDF2
 ### recoverKeys(mnemonic)
 Produce keys for encrypting, signing requests, and generating wallets from the given words using BIP39. The encrypting key corresponds to the key derived at m/0', the signing key (and the respective public address) at m/1', and m/2' for the wallet gen key which is expected to be further derived for each wallet belonging to the same user.
 
+### newKeys()
+Produce keys for encrypting, signing requests, and generating wallets.
+
 ### keyToBuffer(key)
 Convert data stored as a sequence of 8 elements composed of 4 bytes each to a sequence of bytes as a Buffer.
 
