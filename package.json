@@ -1,6 +1,6 @@
 {
   "name": "bitws-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Bitws javascript library",
   "main": "dist/bitws-js.js",
   "scripts": {
