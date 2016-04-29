@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AugustoL/bitws-js.git"
+    "url": "https://github.com/deginner/bitws-js.git"
   },
   "keywords": [],
   "author": "Augusto Lemble <npm@augustolemble.com> (http://augustolemble.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AugustoL/bitws-js/issues"
+    "url": "https://github.com/deginner/bitws-js/issues"
   },
-  "homepage": "https://github.com/AugustoL/bitws-js",
+  "homepage": "https://github.com/deginner/bitws-js",
   "directories": {
     "test": "test"
   },
