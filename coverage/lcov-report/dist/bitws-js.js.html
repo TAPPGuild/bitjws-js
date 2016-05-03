@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">88.89% </span>
+        <span class="strong">87.36% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>80/90</span>
+        <span class='fraction'>76/87</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">66.67% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>16/24</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">90% </span>
+        <span class="strong">77.78% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>9/10</span>
+        <span class='fraction'>7/9</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">88.89% </span>
+        <span class="strong">87.36% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>80/90</span>
+        <span class='fraction'>76/87</span>
       </div>
     </div>
   </div>
@@ -320,18 +320,7 @@
 275
 276
 277
-278
-279
-280
-281
-282
-283
-284
-285
-286
-287
-288
-289</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+278</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
@@ -433,16 +422,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -501,7 +480,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -608,7 +587,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -727,16 +705,6 @@ function recoverKeys(mnemonic) {
     };
 }
 &nbsp;
-&nbsp;
-function newKeys(){
-    var pvKey = new bitcore.PrivateKey();
-    return {
-        address : pvKey.publicKey.toAddress().toString(),
-        key : pvKey,
-        wif : privToWif(pvKey)
-    };
-};
-&nbsp;
 /**
  * Convert data stored as a sequence of 8 elements composed of
  * 4 bytes each to a sequence of bytes as a Buffer.
@@ -788,8 +756,8 @@ function checkBytes(data) {
  * @param {string} priv
  * @returns {string}
  */
-function privToWif(priv) {
-    return bitcore.PrivateKey(priv).toWIF();
+<span class="fstat-no" title="function not covered" >function privToWif(priv) {</span>
+<span class="cstat-no" title="statement not covered" >    return bitcore.PrivateKey(priv).toWIF();</span>
 }
 &nbsp;
 /**
@@ -833,7 +801,7 @@ function jwtHeader(keyId) {
  * @param {object} sign - An object that contains at least "address" and "key".
  * @returns {string}
  */
-function signSerialize(url, data, sign, expTime) {
+function signSerialize(url, data, key, expTime) {
 &nbsp;
     var exp = (new Date().getTime() / 1000) + 3600;
     if (expTime &amp;&amp; expTime &gt; 0)
@@ -847,8 +815,8 @@ function signSerialize(url, data, sign, expTime) {
     }
 &nbsp;
     var rawPayload = base64url.encode(stringify(payload));
-    var msg = jwtHeader(sign.address) + '.' + rawPayload;
-    var signature = base64url.encode(new Message(msg).sign(sign.key));
+    var msg = jwtHeader(key.publicKey.toAddress().toString()) + '.' + rawPayload;
+    var signature = base64url.encode(new Message(msg).sign(key));
 &nbsp;
     return msg + '.' + signature;
 &nbsp;
@@ -904,7 +872,6 @@ module.exports = {
     checkBytes : checkBytes,
     privToWif : privToWif,
     wifToPriv : wifToPriv,
-    newKeys : newKeys,
     bitcore : bitcore
 }
 &nbsp;</pre></td></tr>
@@ -913,7 +880,7 @@ module.exports = {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Apr 29 2016 11:14:56 GMT+0200 (CEST)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue May 03 2016 07:44:13 GMT+0200 (CEST)
 </div>
 </div>
 <script src="../prettify.js"></script>

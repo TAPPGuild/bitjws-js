@@ -107,20 +107,6 @@ function recoverKeys(mnemonic) {
 }
 
 /**
- * Produce keys for encrypting, signing requests, and generating wallets.
- *
- * @returns {object}
- */
-function newKeys(){
-    var pvKey = new bitcore.PrivateKey();
-    return {
-        address : pvKey.publicKey.toAddress().toString(),
-        key : pvKey,
-        wif : privToWif(pvKey)
-    };
-};
-
-/**
  * Convert data stored as a sequence of 8 elements composed of
  * 4 bytes each to a sequence of bytes as a Buffer.
  *
@@ -216,7 +202,7 @@ function jwtHeader(keyId) {
  * @param {object} sign - An object that contains at least "address" and "key".
  * @returns {string}
  */
-function signSerialize(url, data, sign, expTime) {
+function signSerialize(url, data, key, expTime) {
 
     var exp = (new Date().getTime() / 1000) + 3600;
     if (expTime && expTime > 0)
@@ -230,8 +216,8 @@ function signSerialize(url, data, sign, expTime) {
     }
 
     var rawPayload = base64url.encode(stringify(payload));
-    var msg = jwtHeader(sign.address) + '.' + rawPayload;
-    var signature = base64url.encode(new Message(msg).sign(sign.key));
+    var msg = jwtHeader(key.publicKey.toAddress().toString()) + '.' + rawPayload;
+    var signature = base64url.encode(new Message(msg).sign(key));
 
     return msg + '.' + signature;
 
@@ -287,6 +273,5 @@ module.exports = {
     checkBytes : checkBytes,
     privToWif : privToWif,
     wifToPriv : wifToPriv,
-    newKeys : newKeys,
     bitcore : bitcore
 }

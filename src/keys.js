@@ -86,20 +86,6 @@ function recoverKeys(mnemonic) {
 }
 
 /**
- * Produce keys for encrypting, signing requests, and generating wallets.
- *
- * @returns {object}
- */
-function newKeys(){
-    var pvKey = new bitcore.PrivateKey();
-    return {
-        address : pvKey.publicKey.toAddress().toString(),
-        key : pvKey,
-        wif : privToWif(pvKey)
-    };
-};
-
-/**
  * Convert data stored as a sequence of 8 elements composed of
  * 4 bytes each to a sequence of bytes as a Buffer.
  *

@@ -8,6 +8,5 @@ module.exports = {
     checkBytes : checkBytes,
     privToWif : privToWif,
     wifToPriv : wifToPriv,
-    newKeys : newKeys,
     bitcore : bitcore
 }

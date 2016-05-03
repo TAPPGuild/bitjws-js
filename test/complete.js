@@ -9,10 +9,7 @@ describe('Complete Test', function() {
     var derivedKey = null;
 
     it("Should generate a pvkey and add his wif key", function(done) {
-        genKey = bitws.newKeys();
-        expect(genKey).to.have.property("address");
-        expect(genKey).to.have.property("key");
-        expect(genKey).to.have.property("wif");
+        genKey = new bitws.bitcore.PrivateKey();
         done();
     });
 
@@ -34,7 +31,7 @@ describe('Complete Test', function() {
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
-        expect(decoded.header.kid).to.be.equal(genKey.address);
+        expect(decoded.header.kid).to.be.equal(genKey.publicKey.toAddress().toString());
         expect(decoded.payload).to.have.property("aud");
         expect(decoded.payload.aud).to.be.null;
         expect(decoded.payload).to.have.property("data");
@@ -55,7 +52,7 @@ describe('Complete Test', function() {
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
-        expect(decoded.header.kid).to.be.equal(genKey.address);
+        expect(decoded.header.kid).to.be.equal(genKey.publicKey.toAddress().toString());
         expect(decoded.payload).to.have.property("aud");
         expect(decoded.payload.aud).to.be.equal("bitwsjsisawesome.com");
         expect(decoded.payload).to.have.property("data");
@@ -89,7 +86,7 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize(null, payload, derivedKey.key.sign, null);
+        var signature = bitws.signSerialize(null, payload, derivedKey.key.sign.key, null);
         expect(signature.split('.').length).to.be.equal(3);
 
         var decoded = bitws.validateDeserialize(null, signature, true);
@@ -110,7 +107,7 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize("bitwsjsisawesome.com", payload, derivedKey.key.sign, 1800);
+        var signature = bitws.signSerialize("bitwsjsisawesome.com", payload, derivedKey.key.sign.key, 1800);
         expect(signature.split('.').length).to.be.equal(3);
 
         var decoded = bitws.validateDeserialize("bitwsjsisawesome.com", signature, true);
@@ -133,7 +130,7 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize('bitwsjsisawesome.com', payload, derivedKey.key.sign, 10);
+        var signature = bitws.signSerialize('bitwsjsisawesome.com', payload, derivedKey.key.sign.key, 10);
         expect(signature.split('.').length).to.be.equal(3);
 
         setTimeout(function(){

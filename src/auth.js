@@ -26,7 +26,7 @@ function jwtHeader(keyId) {
  * @param {object} sign - An object that contains at least "address" and "key".
  * @returns {string}
  */
-function signSerialize(url, data, sign, expTime) {
+function signSerialize(url, data, key, expTime) {
 
     var exp = (new Date().getTime() / 1000) + 3600;
     if (expTime && expTime > 0)
@@ -40,8 +40,8 @@ function signSerialize(url, data, sign, expTime) {
     }
 
     var rawPayload = base64url.encode(stringify(payload));
-    var msg = jwtHeader(sign.address) + '.' + rawPayload;
-    var signature = base64url.encode(new Message(msg).sign(sign.key));
+    var msg = jwtHeader(key.publicKey.toAddress().toString()) + '.' + rawPayload;
+    var signature = base64url.encode(new Message(msg).sign(key));
 
     return msg + '.' + signature;
 
