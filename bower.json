@@ -1,13 +1,13 @@
 {
-  "name": "bitws-js",
-  "description": "Bitws javascript library",
+  "name": "bitjws-js",
+  "description": "Bitjws javascript library",
   "main": "index.js",
   "authors": [
     "Augusto Lemble <npm@augustolemble.com> (http://augustolemble.com)"
   ],
   "license": "MIT",
   "keywords": [
-    "bitws",
+    "bitjws",
     "javascript",
     "bitcoin",
     "library"

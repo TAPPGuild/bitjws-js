@@ -1,10 +1,10 @@
-# bitws-js
-A javascript library for bitws
+# bitjws-js
+A javascript library for bitjws
 
 ## Install
 
-Bower: `bower install bitws-js`
-NPM: `npm install bitws-js`
+Bower: `bower install bitjws-js`
+NPM: `npm install bitjws-js`
 
 ## Methdos
 

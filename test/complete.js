@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
-var bitws = require('../dist/bitws-js.js');
-var bitwsMin = require('../dist/bitws-js.min.js');
+var bitjws = require('../dist/bitjws-js.js');
+var bitjwsMin = require('../dist/bitjws-js.min.js');
 var bitcore = require('bitcore-lib');
 
 describe('Complete Test', function() {
@@ -9,12 +9,12 @@ describe('Complete Test', function() {
     var derivedKey = null;
 
     it("Should generate a pvkey and add his wif key", function(done) {
-        genKey = new bitws.bitcore.PrivateKey();
+        genKey = new bitjws.bitcore.PrivateKey();
         done();
     });
 
     it("Should derive a new signature using a username and password", function(done) {
-        derivedKey = bitws.deriveKeys('username1', '123456');
+        derivedKey = bitjws.deriveKeys('username1', '123456');
         expect(derivedKey).to.have.property('payload');
         expect(derivedKey).to.have.property('key');
         done();
@@ -24,10 +24,10 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize(null, payload, genKey, null);
+        var signature = bitjws.signSerialize(null, payload, genKey, null);
         expect(signature.split('.').length).to.be.equal(3);
 
-        var decoded = bitws.validateDeserialize(null, signature, true);
+        var decoded = bitjws.validateDeserialize(null, signature, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
@@ -45,16 +45,16 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize("bitwsjsisawesome.com", payload, genKey, 1800);
+        var signature = bitjws.signSerialize("bitjwsjsisawesome.com", payload, genKey, 1800);
         expect(signature.split('.').length).to.be.equal(3);
 
-        var decoded = bitws.validateDeserialize("bitwsjsisawesome.com", signature, true);
+        var decoded = bitjws.validateDeserialize("bitjwsjsisawesome.com", signature, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
         expect(decoded.header.kid).to.be.equal(genKey.publicKey.toAddress().toString());
         expect(decoded.payload).to.have.property("aud");
-        expect(decoded.payload.aud).to.be.equal("bitwsjsisawesome.com");
+        expect(decoded.payload.aud).to.be.equal("bitjwsjsisawesome.com");
         expect(decoded.payload).to.have.property("data");
         expect(decoded.payload.data).to.have.property("something");
         expect(decoded.payload.data.something).to.be.equal("some data here");
@@ -68,12 +68,12 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize('bitwsjsisawesome.com', payload, genKey, 10);
+        var signature = bitjws.signSerialize('bitjwsjsisawesome.com', payload, genKey, 10);
         expect(signature.split('.').length).to.be.equal(3);
 
         setTimeout(function(){
             try {
-                bitws.validateDeserialize('bitwsjsisawesome.com', signature, true);
+                bitjws.validateDeserialize('bitjwsjsisawesome.com', signature, true);
             } catch(e){
                 expect(e.toString()).to.be.equal("Error: Payload expired");
                 done();
@@ -86,10 +86,10 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize(null, payload, derivedKey.key.sign.key, null);
+        var signature = bitjws.signSerialize(null, payload, derivedKey.key.sign.key, null);
         expect(signature.split('.').length).to.be.equal(3);
 
-        var decoded = bitws.validateDeserialize(null, signature, true);
+        var decoded = bitjws.validateDeserialize(null, signature, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
@@ -107,16 +107,16 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize("bitwsjsisawesome.com", payload, derivedKey.key.sign.key, 1800);
+        var signature = bitjws.signSerialize("bitjwsjsisawesome.com", payload, derivedKey.key.sign.key, 1800);
         expect(signature.split('.').length).to.be.equal(3);
 
-        var decoded = bitws.validateDeserialize("bitwsjsisawesome.com", signature, true);
+        var decoded = bitjws.validateDeserialize("bitjwsjsisawesome.com", signature, true);
         expect(decoded).to.have.property("header");
         expect(decoded).to.have.property("payload");
         expect(decoded.header).to.have.property("kid");
         expect(decoded.header.kid).to.be.equal(derivedKey.key.sign.address);
         expect(decoded.payload).to.have.property("aud");
-        expect(decoded.payload.aud).to.be.equal("bitwsjsisawesome.com");
+        expect(decoded.payload.aud).to.be.equal("bitjwsjsisawesome.com");
         expect(decoded.payload).to.have.property("data");
         expect(decoded.payload.data).to.have.property("something");
         expect(decoded.payload.data.something).to.be.equal("some data here");
@@ -130,12 +130,12 @@ describe('Complete Test', function() {
 
         var payload = { something : "some data here" }
 
-        var signature = bitws.signSerialize('bitwsjsisawesome.com', payload, derivedKey.key.sign.key, 10);
+        var signature = bitjws.signSerialize('bitjwsjsisawesome.com', payload, derivedKey.key.sign.key, 10);
         expect(signature.split('.').length).to.be.equal(3);
 
         setTimeout(function(){
             try {
-                bitws.validateDeserialize('bitwsjsisawesome.com', signature, true);
+                bitjws.validateDeserialize('bitjwsjsisawesome.com', signature, true);
             } catch(e){
                 expect(e.toString()).to.be.equal("Error: Payload expired");
                 done();

@@ -1,23 +1,23 @@
 {
-  "name": "bitws-js",
-  "version": "0.0.3",
-  "description": "Bitws javascript library",
-  "main": "dist/bitws-js.js",
+  "name": "bitjws-js",
+  "version": "0.0.4",
+  "description": "Bitjws javascript library",
+  "main": "dist/bitjws-js.js",
   "scripts": {
     "test": "./node_modules/istanbul/lib/cli.js cover ./node_modules/.bin/_mocha",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AugustoL/bitws-js.git"
+    "url": "https://github.com/TAPPGuild/bitjws-js.git"
   },
   "keywords": [],
   "author": "Augusto Lemble <npm@augustolemble.com> (http://augustolemble.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AugustoL/bitws-js/issues"
+    "url": "https://github.com/TAPPGuild/bitjws-js/issues"
   },
-  "homepage": "https://github.com/AugustoL/bitws-js",
+  "homepage": "https://github.com/TAPPGuild/bitjws-js",
   "directories": {
     "test": "test"
   },

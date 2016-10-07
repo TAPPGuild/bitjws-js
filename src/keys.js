@@ -91,10 +91,10 @@ function recoverKeys(mnemonic) {
  *
  * @example
  * ```javascript
- * var bitws = require('bitws-js');
+ * var bitjws = require('bitjws-js');
  *
- * var data = bitws.keys.deriveKeys('my username', 'my password');
- * var buffer = bitws.keys.keyToBuffer(data.key.encrypt);
+ * var data = bitjws.keys.deriveKeys('my username', 'my password');
+ * var buffer = bitjws.keys.keyToBuffer(data.key.encrypt);
  * ```
  *
  * @param {array} key - array of length 8
